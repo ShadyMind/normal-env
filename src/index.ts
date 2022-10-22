@@ -43,11 +43,29 @@ export const ENV_MAP: EnvMap<EnvKind> = {
     [PRODUCTION]: PRODUCTION,
 };
 
+const getEnvToken = () => {
+    if (globalThis) {
+        const versions = globalThis.process?.versions;
+
+        if ('node' in versions) {
+            return process.env['NODE_ENV'];
+        }
+
+        if ('document' in globalThis) {
+            if (globalThis.localStorage instanceof globalThis.Storage) {
+                return globalThis.localStorage.getItem('ENV');
+            }
+        }
+    }
+
+    return '';
+};
+
 export class Env<T extends string = string> {
     private map: EnvMap<T>;
     private value: string;
 
-    constructor(env = process.env.NODE_ENV, map?: EnvMap<T>) {
+    constructor(env = getEnvToken(), map?: EnvMap<T>) {
         this.map = map || ENV_MAP as EnvMap<T>;
         this.value = env || this.map.default;
     }
@@ -87,5 +105,4 @@ export class Env<T extends string = string> {
     isProduction() {
         return this.map === ENV_MAP && this.toString() === PRODUCTION;
     }
-
 }

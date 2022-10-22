@@ -11,8 +11,8 @@ describe('Env main functionality', () => {
     });
 
     it('should handle all shorthands', () => {
-        Object.entries(ENV_MAP).forEach(([env, name]) => {
-            expect((new Env(env)).toString()).toStrictEqual(name);
+        Object.entries(ENV_MAP).forEach((kv) => {
+            expect((new Env(kv[0])).toString()).toStrictEqual(kv[1]);
         });
     });
 
