@@ -1,7 +1,5 @@
 # Normal Env
 
-----
-
 This project aimed to cover base requirements in work with NODE_ENV environment variable and it equivalent in the other platforms with convenient interface.
 
 ## Installation:
@@ -31,8 +29,6 @@ import { Env } from 'normal-env';
 
 ## Run:
 
-----
-
 ### From process.env
 ```javascript
 const env = Env.from(process.env.NODE_ENV)
@@ -42,8 +38,6 @@ equivalent to:
 const env = new Env() // will get from default accessor
 ```
 
-----
-
 ### From Web StorageAPI
 ```javascript
 const env = Env.from(localStorage.getItem('ENV'));
@@ -52,8 +46,6 @@ equivalent to:
 ```javascript
 const env = new Env() // will get from default accessor
 ```
-
-----
 
 ## Checking:
 
@@ -72,8 +64,6 @@ env.isStage()
 ```javascript
 env.isProduction()
 ```
-
-----
 
 ## Custom environment variables variation map:
 
