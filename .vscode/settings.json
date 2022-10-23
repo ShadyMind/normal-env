@@ -2,7 +2,8 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.expand": false,
     "explorer.fileNesting.patterns": {
-        "*.js": "$(capture).min.js, $(capture).d.ts, $(capture).js.map, $(capture).d.ts.map"
+        "*.js": "$(capture).min.js, $(capture).d.ts, $(capture).js.map, $(capture).d.ts.map",
+        "*.config.js": "*.config.js"
     },
     "editor.tabSize": 2
 }
