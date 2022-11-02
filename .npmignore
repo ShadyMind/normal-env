@@ -1,0 +1,14 @@
+.artifacts
+.husky
+.vscode
+node_modules
+src
+test
+.npmignore
+.gitignore
+tsconfig.json
+.editorconfig
+cspell.config.js
+jest.config.js
+lint-staged.config.js
+prettier.config.js

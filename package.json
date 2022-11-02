@@ -2,11 +2,12 @@
   "name": "normal-env",
   "version": "0.1.5",
   "description": "",
-  "main": "src/index.ts",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
   "scripts": {
     "test": "jest",
-    "prepare": "./scripts/prepare",
-    "build": "./scripts/build",
+    "prepare": "node ./scripts/prepare.js",
+    "build": "tsc",
     "fix": "prettier -w src/** test/** scripts/**.js *",
     "publish": "npm --prefix='$CWD/.artifacts/build' publish"
   },
@@ -23,7 +24,7 @@
       "email": "borisastanin@gmail.com"
     }
   ],
-  "license": "apache",
+  "license": "APACHE",
   "devDependencies": {
     "@types/jest": "^29.2.0",
     "@types/node": "^18.11.3",

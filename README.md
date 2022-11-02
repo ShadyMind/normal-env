@@ -1,5 +1,7 @@
 # Normal Env
 
+[![install size](https://packagephobia.com/badge?p=normal-env@0.1.5)](https://packagephobia.com/result?p=normal-env@0.1.5)
+
 This project aimed to cover base requirements in work with NODE_ENV environment variable and it equivalent in the other platforms with convenient interface.
 
 ## Installation:
