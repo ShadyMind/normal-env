@@ -8,8 +8,7 @@
     "test": "jest",
     "prepare": "node ./scripts/prepare.js",
     "build": "tsc",
-    "fix": "prettier -w src/** test/** scripts/**.js *",
-    "publish": "npm --prefix='$CWD/.artifacts/build' publish"
+    "fix": "prettier -w src/** test/** scripts/**.js *"
   },
   "keywords": [
     "environment"
