@@ -1,12 +1,4 @@
 {
-  "explorer.fileNesting.enabled": true,
-  "explorer.fileNesting.expand": false,
-  "explorer.fileNesting.patterns": {
-    ".npmignore": ".gitignore",
-    "*.js": "$(capture).min.js, $(capture).d.ts, $(capture).js.map, $(capture).d.ts.map",
-    "tsconfig.json": "cspell.config.js, jest.config.js, lint-staged.config.js, prettier.config.js, .editorconfig",
-    "README.md": "*.md"
-  },
   "editor.tabSize": 2,
   "editor.autoIndent": "full",
   "editor.defaultFormatter": "esbenp.prettier-vscode"

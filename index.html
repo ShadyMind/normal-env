@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/style.css" />
+    <script src="https://unpkg.com/ttty/dist/ttty.iife.js"></script>
+    <script type="application/javascript" src="./assets/index.js"></script>
+    <script src="https://unpkg.com/normal-env"></script>
+    <!-- <script src="https://unpkg.com/shiki"></script> -->
+  </head>
+  <body>
+    <div id="terminal"></div>
+    <main id="docs">
+      <article id="docs">
+        <h1 id="start">Normal-env</h1>
+        <code data-lang="bash">
+          $ yarn install normal-env
+        </code>
+        <a href="#map">
+          <h2 id="map">
+            <svg class="icon"><use href="#Capa" /></svg>
+            <span>Default normalization table</span>
+          </h2>
+        </a>
+        <table class="table-becomes">
+          <thead>
+            <tr>
+              <td>Value</td>
+              <td></td>
+              <td>Becomes</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ci</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>ci</td>
+            </tr>
+            <tr>
+              <td>dok</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>docker</td>
+            </tr>
+            <tr>
+              <td>dkr</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>docker</td>
+            </tr>
+            <tr>
+              <td>docker</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>docker</td>
+            </tr>
+            <tr>
+              <td>dbg</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>debug</td>
+            </tr>
+            <tr>
+              <td>debug</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>debug</td>
+            </tr>
+            <tr>
+              <td>d</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>development</td>
+            </tr>
+            <tr>
+              <td>dev</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>development</td>
+            </tr>
+            <tr>
+              <td>devel</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>development</td>
+            </tr>
+            <tr>
+              <td>develop</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>development</td>
+            </tr>
+            <tr>
+              <td>development</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>development</td>
+            </tr>
+            <tr>
+              <td>t</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>test</td>
+            </tr>
+            <tr>
+              <td>tst</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>test</td>
+            </tr>
+            <tr>
+              <td>test</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>test</td>
+            </tr>
+            <tr>
+              <td>pre</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>preview</td>
+            </tr>
+            <tr>
+              <td>prev</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>preview</td>
+            </tr>
+            <tr>
+              <td>prep</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>preview</td>
+            </tr>
+            <tr>
+              <td>preprom</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>preview</td>
+            </tr>
+            <tr>
+              <td>preprod</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>preview</td>
+            </tr>
+            <tr>
+              <td>stg</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>preview</td>
+            </tr>
+            <tr>
+              <td>stage</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>preview</td>
+            </tr>
+            <tr>
+              <td>preview</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>preview</td>
+            </tr>
+            <tr>
+              <td>p</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>production</td>
+            </tr>
+            <tr>
+              <td>prod</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>production</td>
+            </tr>
+            <tr>
+              <td>prom</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>production</td>
+            </tr>
+            <tr>
+              <td>product</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>production</td>
+            </tr>
+            <tr>
+              <td>production</td>
+              <td><svg class="icon"><use href="#Arrow" /></svg></td>
+              <td>production</td>
+            </tr>
+          </table>
+        </table>
+      </article>
+    </main>
+  </body>
+  <svg  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+    <symbol id="Capa" viewBox="0 0 27.7 27.7" xml:space="preserve">
+      <g>
+        <path style="fill:currentColor;" d="M25.899,5.935h-15.81c-0.991,0-1.801,0.771-1.801,1.721v1.639h15.81v0.45v4.128v0.314H8.288v1.845    c0,0.95,0.81,1.722,1.801,1.722h15.81c0.996,0,1.801-0.771,1.801-1.722V7.656C27.7,6.706,26.895,5.935,25.899,5.935z"/>
+        <path style="fill:currentColor;" d="M3.599,18.302v-0.418v-4.126V13.41h15.808v-1.74c0-0.952-0.805-1.723-1.801-1.723H1.798    C0.805,9.947,0,10.717,0,11.669v8.374c0,0.952,0.805,1.723,1.798,1.723h15.808c0.996,0,1.801-0.771,1.801-1.723v-1.741H3.599z"/>
+      </g>
+    </symbol>
+    <symbol id="Arrow" viewBox="0 0 24 24" xml:space="preserve">
+      <path style="fill:currentColor;" d="M10.46 18a2.23 2.23 0 0 1-.91-.2 1.76 1.76 0 0 1-1.05-1.59V7.79A1.76 1.76 0 0 1 9.55 6.2a2.1 2.1 0 0 1 2.21.26l5.1 4.21a1.7 1.7 0 0 1 0 2.66l-5.1 4.21a2.06 2.06 0 0 1-1.3.46z"/>
+    </symbol>
+  </svg>
+</html>
