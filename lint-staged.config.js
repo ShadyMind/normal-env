@@ -11,7 +11,7 @@
 const lintStagedConfig = {};
 
 lintStagedConfig["src/**/*.ts"] = "tsc --noEmit";
-lintStagedConfig["(src|test|scripts)/**|**/*.md|*.js"] = "cspell check";
+lintStagedConfig["(src|test|scripts)/**|**/*.md|*.js"] = "cspell lint";
 lintStagedConfig["scripts/**/*.js|src/*.ts|*.md"] = "prettier --check";
 
 module.exports = lintStagedConfig;

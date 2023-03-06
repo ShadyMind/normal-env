@@ -14,6 +14,14 @@ const cSpellConfig = {
   ],
   ignorePaths: [
     './package-lock.json'
+  ],
+  words: [
+    "doker",
+    "preprod",
+    "preprom"
+  ],
+  files: [
+    "src/**"
   ]
 };
 

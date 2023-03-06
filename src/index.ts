@@ -1,117 +1,106 @@
-// cSpell:words devel, preprom, preprod
+import type { EnvConfig, Config, Checkers, EnvStaticBase } from './types';
+import './globals';
+import { DEFAULT_CONFIG } from './constants';
 
-type EnvKind =
-  | "ci"
-  | "docker"
-  | "debug"
-  | "development"
-  | "test"
-  | "preview"
-  | "production";
+const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null && typeof process.env !== 'undefined';
+const isWeb = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+const isDeno = typeof Deno !== 'undefined' && typeof Deno.version !== 'undefined' && typeof Deno.version.deno !== 'undefined' && typeof Deno.env !== 'undefined';
+const isBun = typeof Bun !== 'undefined' && typeof Bun.env !== 'undefined';
 
-export const CI = "ci" as const;
-export const DOCKER = "docker" as const;
-export const DEBUG = "debug" as const;
-export const DEVELOPMENT = "development" as const;
-export const TEST = "test" as const;
-export const PREVIEW = "preview" as const;
-export const PRODUCTION = "production" as const;
+const getIntrinsicEnv = (): string | undefined => {
+  if (isWeb) {
+    return window.localStorage.getItem('WEB_ENV');
+  }
 
-interface EnvMap<T extends string = string> {
-  default: T;
-  [key: string]: T;
+  if (isNode) {
+    return process.env['NODE_ENV'];
+  }
+
+  if (isDeno) {
+    return Deno.env.get('DENO_ENV');
+  }
+
+  if (isBun) {
+    return Bun.env['BUN_ENV'];
+  }
+
+  return undefined;
 }
 
-export const ENV_MAP: EnvMap<EnvKind> = {
-  default: DEVELOPMENT,
-  ci: CI,
-  dok: DOCKER,
-  dkr: DOCKER,
-  [DOCKER]: DOCKER,
-  dbg: DEBUG,
-  [DEBUG]: DEBUG,
-  d: DEVELOPMENT,
-  dev: DEVELOPMENT,
-  devel: DEVELOPMENT,
-  develop: DEVELOPMENT,
-  [DEVELOPMENT]: DEVELOPMENT,
-  t: TEST,
-  tst: TEST,
-  [TEST]: TEST,
-  pre: PREVIEW,
-  prev: PREVIEW,
-  prep: PREVIEW,
-  preprom: PREVIEW,
-  preprod: PREVIEW,
-  stg: PREVIEW,
-  stage: PREVIEW,
-  [PREVIEW]: PREVIEW,
-  p: PRODUCTION,
-  prod: PRODUCTION,
-  product: PRODUCTION,
-  [PRODUCTION]: PRODUCTION,
-};
+const createAliasAssociationsMap = <T extends string>(config: Config<T>): Map<string, T> => {
+  const map: Map<string, T> = new Map();
 
-const getEnvToken = () => {
-  if (globalThis) {
-    const versions = globalThis.process?.versions;
+  for (let [name, value] of Object.entries<EnvConfig>(config)) {
+    map.set(name, name as T);
 
-    if ("node" in versions) {
-      return process.env["NODE_ENV"];
+    value.aliases.forEach((alias) => {
+      map.set(alias, name as T);
+    });
+
+    if (value.default) {
+      map.set('_', name as T);
+    }
+  }
+
+  return map;
+}
+
+const createCheckers = <T extends string>(config: Config<T>): Record<string, () => boolean> => {
+  const checkers: Record<string, () => boolean> = {};
+
+  for (let name of Object.keys(config)) {
+    checkers[`is${name.at(0)?.toUpperCase()}${name.slice(1)}`] = function () {
+      return this.toString() === name;
+    }
+  }
+
+  return checkers;
+}
+
+export function createEnvConstructor<T extends string>(config: Config<T>) {
+  const aliasesMap = createAliasAssociationsMap(config);
+
+  class Env implements EnvStaticBase<T> {
+    token: string | undefined;
+
+    static from(token: string | undefined) {
+      return new Env(token);
     }
 
-    if ("document" in globalThis) {
-      if (globalThis.localStorage instanceof globalThis.Storage) {
-        return globalThis.localStorage.getItem("ENV");
+    constructor(token = process.env['NODE_ENV']) {
+      Object.assign(this, createCheckers(config));
+      this.token = token || getIntrinsicEnv();
+    }
+
+    is(token: string) {
+      return this.name() === aliasesMap.get(token);
+    }
+
+    name(): T | 'default' {
+      let formal: T | undefined;
+    
+      if (typeof this.token !== 'undefined' && aliasesMap.get(this.token)) {
+        formal = aliasesMap.get(this.token);
+      } else {
+        formal = aliasesMap.get('_');
       }
+
+      if (!formal) {
+        return 'default';
+      }
+
+      return formal;
+    }
+
+    toString(): T | 'default' {
+      return this.name();
     }
   }
 
-  return "";
-};
-
-export class Env<T extends string = string> {
-  private map: EnvMap<T>;
-  private value: string;
-
-  constructor(env = getEnvToken(), map?: EnvMap<T>) {
-    this.map = map || (ENV_MAP as EnvMap<T>);
-    this.value = env || this.map.default;
-  }
-
-  static from(env: string) {
-    return new Env(env);
-  }
-
-  toString() {
-    return this.map[this.value];
-  }
-
-  isCi() {
-    return this.map === ENV_MAP && this.toString() === CI;
-  }
-
-  isDocker() {
-    return this.map === ENV_MAP && this.toString() === DOCKER;
-  }
-
-  isDebug() {
-    return this.map === ENV_MAP && this.toString() === DEBUG;
-  }
-
-  isDevelopment() {
-    return this.map === ENV_MAP && this.toString() === DEVELOPMENT;
-  }
-
-  isTest() {
-    return this.map === ENV_MAP && this.toString() === TEST;
-  }
-
-  isPreview() {
-    return this.map === ENV_MAP && this.toString() === PREVIEW;
-  }
-
-  isProduction() {
-    return this.map === ENV_MAP && this.toString() === PRODUCTION;
-  }
+  return Env as unknown as {
+    new(token?: string): InstanceType<typeof Env> & Checkers<T>;
+    from(token?: string): InstanceType<typeof Env> & Checkers<T>;
+  };
 }
+
+export const Env = createEnvConstructor(DEFAULT_CONFIG);
