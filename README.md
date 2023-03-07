@@ -9,7 +9,7 @@ This project aimed to cover base requirements in work with NODE_ENV environment 
 With `npm`:
 
 ```bash
-$ npm i normal-env ( --save-prod | --save-dev )
+$ npm i normal-env --save-prod ( --save-dev )
 ```
 
 With `yarn`:
@@ -18,87 +18,41 @@ With `yarn`:
 $ yarn add normal-env [ --dev ]
 ```
 
-## Usage:
-
-### Importing
-
-#### With call require method
-
+## Usage
 ```javascript
-const { Env } = require("normal-env");
+import { Env } from 'normal-env';
+
+const env = new Env();
+const config = fs.readFileSync(`db.${env}.json`).toString();
+const connection = db.createConnection({
+  ...config,
+  debug: config.isDevelopment()
+})
 ```
+## What happined here?
 
-#### With import syntax
+* We import named class "Env" (not default exported). It will take data from your environment based on your system (web, node.js, deno or bun);
+* Make an instance of this class;
+* It can serialize to string so we put it in filename to read. (check config keys in [this file](./src/constants.ts) to find possible variations);
+* We put config to abstract database client connection method and extends it with debug property and check is environment in development as a value;
 
-```javascript
-import { Env } from "normal-env";
+## How it work from terminal?
+```bash
+$ node ./server.js
 ```
+will set environment to default value "development"
 
-## Run:
-
-### From process.env
-
-```javascript
-const env = Env.from(process.env.NODE_ENV);
 ```
-
-equivalent to:
-
-```javascript
-const env = new Env(); // will get from default accessor
+$ NODE_ENV=tst ./server.js
 ```
+will set environment to "test" value
 
-### From Web StorageAPI
-
-```javascript
-const env = Env.from(localStorage.getItem("ENV"));
 ```
-
-equivalent to:
-
-```javascript
-const env = new Env(); // will get from default accessor
+$ NODE_ENV=prod ./server.js
 ```
+will set environment to "production" value
 
-## Checking:
-
-```javascript
-env.isDevelopment();
 ```
-
-```javascript
-env.isTest();
+$ NODE_ENV=ci ./server.js
 ```
-
-```javascript
-env.isStage();
-```
-
-```javascript
-env.isProduction();
-```
-
-## Custom environment variables variation map:
-
-```javascript
-const env = new Env(undefined, {
-  default: "development",
-  dev: "development",
-  test: "test",
-  prod: "production",
-});
-```
-
-## Definitions:
-
-|   Kind | Member              | Type                     | Description                                             |
-| -----: | :------------------ | :----------------------- | :------------------------------------------------------ |
-| static | `Env.from`          | `(token: string) => Env` | Gets env as token and create new instance of Env class  |
-|        | `Env#toString`      | `() => string`           | Returns normalized environment value                    |
-|        | `Env#isCi`          | `() => boolean`          | Returns true if environment variable like `ci`          |
-|        | `Env#isDocker`      | `() => boolean`          | Returns true if environment variable like `docker`      |
-|        | `Env#isDebug`       | `() => boolean`          | Returns true if environment variable like `debug`       |
-|        | `Env#isDevelopment` | `() => boolean`          | Returns true if environment variable like `development` |
-|        | `Env#isTest`        | `() => boolean`          | Returns true if environment variable like `test`        |
-|        | `Env#isPreview`     | `() => boolean`          | Returns true if environment variable like `preview`     |
-|        | `Env#isProduction`  | `() => boolean`          | Returns true if environment variable like `production`  |
+will set environment to "ci" value
