@@ -1,5 +1,5 @@
-const husky = require("husky");
+const { install } = require('husky');
 
-if (typeof process.env["CI"] === "undefined") {
-  husky.install();
+if (typeof process.env['CI'] === 'undefined') {
+  install();
 }

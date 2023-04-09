@@ -97,9 +97,9 @@ export function createEnvConstructor<T extends string>(config: Config<T>) {
     }
   }
 
-  return Env as unknown as {
-    new(token?: string): InstanceType<typeof Env> & Checkers<T>;
-    from(token?: string): InstanceType<typeof Env> & Checkers<T>;
+  return Env as {
+    new(token?: string): (InstanceType<typeof Env> & Checkers<T>);
+    from(token: string): (InstanceType<typeof Env> & Checkers<T>);
   };
 }
 

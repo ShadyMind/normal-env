@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "prepare": "node ./scripts/prepare.js",
-    "build": "tsc",
+    "build": "rm -rf build/* && tsc",
     "fix": "prettier -w src/** test/** scripts/**.js *"
   },
   "keywords": [

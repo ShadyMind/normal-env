@@ -5,11 +5,23 @@ import { DEFAULT_CONFIG } from '../src/constants';
 const CustomEnv = createEnvConstructor({
   record: {
     default: false,
-    aliases: ['r', 'rec']
+    aliases: ['r', 'rd', 'rec']
   },
-  play: {
+  play: { 
     default: true,
-    aliases: ['p', 'ply']
+    aliases: ['p', 'pl', 'ply']
+  },
+  stop: {
+    default: false,
+    aliases: ['s', 'stp']
+  },
+  pause: {
+    default: false,
+    aliases: ['pa', 'pau']
+  },
+  rewind: {
+    default: false,
+    aliases: ['rw', 'rwd']
   }
 });
 
