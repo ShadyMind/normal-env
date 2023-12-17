@@ -24,4 +24,4 @@ export const DEFAULT_CONFIG = {
     default: false,
     aliases: ['p', 'prod', 'product']
   }
-}
+};

@@ -1,55 +1,85 @@
-import type { EnvConfig, Config, Checkers, EnvStaticBase } from './types';
-import './globals';
+import type { Config, Checkers, StaticCheckerFn } from './types';
 import { DEFAULT_CONFIG } from './constants';
 
-const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null && typeof process.env !== 'undefined';
-const isWeb = typeof window !== 'undefined' && typeof window.document !== 'undefined';
-const isDeno = typeof Deno !== 'undefined' && typeof Deno.version !== 'undefined' && typeof Deno.version.deno !== 'undefined' && typeof Deno.env !== 'undefined';
-const isBun = typeof Bun !== 'undefined' && typeof Bun.env !== 'undefined';
+const isObject = (input: unknown): input is Record<PropertyKey, unknown> =>
+  input !== null && input instanceof Object && !(Symbol.iterator in input);
 
-const getIntrinsicEnv = (): string | undefined => {
-  if (isWeb) {
-    return window.localStorage.getItem('WEB_ENV');
+  // @TODO think about getters instead of type guards for env accessors
+const isWeb = (global: unknown): global is WebAPI =>
+  isObject(global) && isObject(global['document'])
+    && global['document']['nodeType'] === 9
+    && typeof global['document']['nodeName'] === 'string';
+
+const isNode = (global: unknown): global is NodeAPI =>
+  isObject(global)
+    && isObject(global['process'])
+    && isObject(global['process']['versions'])
+    && typeof global['process']['versions']['node'] === 'string'
+    && isObject(global['process']['env'])
+    && typeof global['process']['env']['NODE_ENV'] === 'string';
+
+const isDeno = (global: unknown): global is { Deno: DenoAPI } =>
+  isObject(global)
+    && isObject(global['Deno'])
+    && isObject(global['Deno']['version'])
+    && typeof global['Deno']['version']['deno'] === 'string'
+    && isObject(global['Deno']['env'])
+    && typeof global['Deno']['env']['get'] === 'function';
+
+const isBun = (global: unknown): global is { Bun: BunAPI } => 
+  isObject(global)
+  && isObject(global['Bun'])
+  && isObject(global['Bun']['env'])
+  && typeof global['Bun']['env']['BUN_ENV'] === 'string';
+
+let intrinsicEnv: string | null = null;
+
+const getIntrinsicEnv = (): string | null => {
+  const global = globalThis || window;
+
+  if (isNode(global)) {
+    intrinsicEnv = global.process.env['NODE_ENV'] || null;
   }
 
-  if (isNode) {
-    return process.env['NODE_ENV'];
+  if (isWeb(global)) {
+    intrinsicEnv = global.localStorage.getItem('WEB_ENV');
   }
 
-  if (isDeno) {
-    return Deno.env.get('DENO_ENV');
+  if (isDeno(global)) {
+    intrinsicEnv = global.Deno.env.get('DENO_ENV') || null;
   }
 
-  if (isBun) {
-    return Bun.env['BUN_ENV'];
+  if (isBun(global)) {
+    intrinsicEnv = global.Bun.env['BUN_ENV'] || null;
   }
 
-  return undefined;
+  return intrinsicEnv;
 }
 
-const createAliasAssociationsMap = <T extends string>(config: Config<T>): Map<string, T> => {
+function createAliasAssociationsMap<T extends string>(config: Config<T>): Map<string, T> {
   const map: Map<string, T> = new Map();
 
-  for (let [name, value] of Object.entries<EnvConfig>(config)) {
-    map.set(name, name as T);
+  for (let key in config) {
+    const { aliases, default: defaultValue } = config[key];
+    map.set(key, key);
 
-    value.aliases.forEach((alias) => {
-      map.set(alias, name as T);
-    });
+    for (let i = 0, len = aliases.length; i < len; i++) {
+      map.set(aliases[i]!, key);
+    }
 
-    if (value.default) {
-      map.set('_', name as T);
+    if (defaultValue) {
+      map.set('_', key);
     }
   }
 
   return map;
 }
 
-const createCheckers = <T extends string>(config: Config<T>): Record<string, () => boolean> => {
-  const checkers: Record<string, () => boolean> = {};
+function buildStaticCheckers <T extends string>(config: Config<T>): Record<string, StaticCheckerFn> {
+  const checkers: Record<string, StaticCheckerFn> = {};
 
   for (let name of Object.keys(config)) {
-    checkers[`is${name.at(0)?.toUpperCase()}${name.slice(1)}`] = function () {
+    checkers[`is${name[0]!.toUpperCase()}${name.slice(1)}`] = function () {
       return this.toString() === name;
     }
   }
@@ -60,16 +90,16 @@ const createCheckers = <T extends string>(config: Config<T>): Record<string, () 
 export function createEnvConstructor<T extends string>(config: Config<T>) {
   const aliasesMap = createAliasAssociationsMap(config);
 
-  class Env implements EnvStaticBase<T> {
-    token: string | undefined;
+  class Env {
+    token: string | null;
 
     static from(token: string | undefined) {
       return new Env(token);
     }
 
-    constructor(token = process.env['NODE_ENV']) {
-      Object.assign(this, createCheckers(config));
-      this.token = token || getIntrinsicEnv();
+    constructor(token = getIntrinsicEnv()) {
+      Object.assign(this, buildStaticCheckers(config));
+      this.token = token;
     }
 
     is(token: string) {
@@ -79,7 +109,7 @@ export function createEnvConstructor<T extends string>(config: Config<T>) {
     name(): T | 'default' {
       let formal: T | undefined;
     
-      if (typeof this.token !== 'undefined' && aliasesMap.get(this.token)) {
+      if (this.token !== null && aliasesMap.get(this.token)) {
         formal = aliasesMap.get(this.token);
       } else {
         formal = aliasesMap.get('_');
