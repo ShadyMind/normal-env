@@ -16,9 +16,13 @@ const cSpellConfig = {
     './package-lock.json'
   ],
   words: [
-    "doker",
-    "preprod",
-    "preprom"
+    'doker',
+    'preprod',
+    'preprom',
+    'premajor',
+    'preminor',
+    'prepatch',
+    'prerelease'
   ],
   files: [
     "src/**"
