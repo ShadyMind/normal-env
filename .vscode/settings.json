@@ -4,7 +4,7 @@
   "explorer.fileNesting.patterns": {
     ".npmignore": ".gitignore",
     "*.js": "$(capture).min.js, $(capture).d.ts, $(capture).js.map, $(capture).d.ts.map",
-    "tsconfig.json": "cspell.config.js, jest.config.js, lint-staged.config.js, prettier.config.js, .editorconfig",
+    "tsconfig.json": "cspell.config.js, jest.config.js, lint-staged.config.js, prettier.config.js, .editorconfig, webpack.config.ts",
     "README.md": "*.md"
   },
   "editor.tabSize": 2,

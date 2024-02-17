@@ -22,6 +22,8 @@ $ yarn add normal-env [ --dev ]
 
 ## Usage
 ```javascript
+/* file: db-cursor.ks */
+
 import { Env } from 'normal-env';
 
 const env = new Env();
@@ -30,6 +32,30 @@ const connection = db.createConnection({
   ...config,
   debug: env.isDevelopment()
 })
+```
+
+```javascript
+/* file: webpack.config.js */
+
+import { Env } from 'normal-env';
+
+const env = new Env();
+
+export default {
+  mode: env.toWebpackMode(),
+  devtool: env.isDevelopment()
+    ? 'cheap-module-source-map'
+    : null,
+  optimization: env.isDevelopment()
+    ? {
+      minimize: true,
+      minimizer: [new TerserPlugin()]
+    }
+    : null
+  // ... rest of webpack configuration
+};
+
+
 ```
 ## What happined here?
 

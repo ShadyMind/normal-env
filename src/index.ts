@@ -1,5 +1,5 @@
 import type { Config, Checkers, StaticCheckerFn } from './types';
-import { getIntrinsicEnv } from './types';
+import { getIntrinsicEnv, isWebpackMode } from './types';
 import { DEFAULT_CONFIG } from './constants';
 
 function createAliasAssociationsMap<T extends string>(config: Config<T>): Map<string, T> {
@@ -70,6 +70,16 @@ export function createEnvConstructor<T extends string>(config: Config<T>) {
 
     toString(): T | 'default' {
       return this.name();
+    }
+
+    toWebpackMode(): 'production' | 'development' | 'none' {
+      const name = this.toString();
+
+      if (isWebpackMode(name)) {
+        return name;
+      }
+
+      return 'none';
     }
   }
 

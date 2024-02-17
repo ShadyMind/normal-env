@@ -5,11 +5,12 @@ export type EnvConfig = {
 export type StaticCheckerFn = () => boolean;
 export type Config<T extends string> = Record<T, EnvConfig>;
 export type Checkers<T extends string> = Record<`is${Capitalize<T>}`, StaticCheckerFn>;
+export type WebpackMode = 'production' | 'development' | 'none';
 type WebStorageKey = string | number | bigint;
 type WebDocumentElement = {
   nodeName: '#document';
   nodeType: 9;
-};
+}; 
 
 interface WebStorageAPI extends Object {
   length: number;
@@ -53,6 +54,8 @@ interface BunAPI {
   };
 }
 
+declare const BROWSER: true;
+
 export interface EnvStaticBase<T extends string> {
   name(): T | 'default';
   toString(): T | 'default';
@@ -60,6 +63,7 @@ export interface EnvStaticBase<T extends string> {
 }
 
 const isObject = (input: unknown): input is Record<PropertyKey, unknown> =>
+  // @ts-ignore
   input !== null && input instanceof Object && !(Symbol.iterator in input);
 
 const isWeb = (global: unknown): global is WebAPI =>
@@ -89,7 +93,10 @@ const isBun = (global: unknown): global is BunAPI =>
   && isObject(global['Bun']['env'])
   && typeof global['Bun']['env']['BUN_ENV'] === 'string';
 
-export const getIntrinsicEnv = (): string | null => {
+let _getIntrinsicEnv;
+
+if (BROWSER) {
+_getIntrinsicEnv = (): string | null => {
   const global: unknown = globalThis || window;
 
   if (isNode(global)) {
@@ -97,7 +104,7 @@ export const getIntrinsicEnv = (): string | null => {
   }
 
   if (isWeb(global)) {
-    return global.localStorage.getItem('WEB_ENV');
+    return global.localStorage.getItem('WEB_ENV') || null;
   }
 
   if (isDeno(global)) {
@@ -109,4 +116,12 @@ export const getIntrinsicEnv = (): string | null => {
   }
 
   return null;
+}
+} else {
+_getIntrinsicEnv = (): string | null => window.localStorage.getItem('WEB_ENV')
+}
+
+export const getIntrinsicEnv = _getIntrinsicEnv;
+export const isWebpackMode = (env: string): env is WebpackMode => {
+  return env === 'production' || env === 'development';
 }

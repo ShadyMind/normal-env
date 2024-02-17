@@ -78,4 +78,11 @@ describe('Env main functionality', () => {
       expect(new Env(formalName)[otherCheckerName]()).toBeFalsy();
     });
   });
+
+  it('should return valid value for webpack mode configuration', () => {
+    expect(new Env().toWebpackMode()).toEqual('development');
+    expect(new Env('dev').toWebpackMode()).toEqual('development');
+    expect(new Env('prod').toWebpackMode()).toEqual('production');
+    expect(new Env('preview').toWebpackMode()).toEqual('none');
+  });
 });
