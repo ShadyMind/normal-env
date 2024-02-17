@@ -2,11 +2,12 @@
 
 'use strict';
 
-const { promisify } = require('node:util');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 const { rmSync, statSync } = require('node:fs'); 
 const { updateVersion } = require('./update-version');
+const webpack = require('webpack');
+require('ts-node').register();
 
 const SPAWN_OPTIONS = {
     env: process.env,
@@ -26,9 +27,21 @@ const SPAWN_OPTIONS = {
   spawnSync('npm run test', [], SPAWN_OPTIONS);
   console.log('All tests passed.');
   
-  spawnSync('npm run build', [], SPAWN_OPTIONS);
-  console.log('Application built.');
+  webpack(
+    require('../webpack.config.ts').default,
+    async (err, stats) => {
+      if (err) {
+        throw err;
+      }
+      if (stats && stats.hasErrors()) {
+        console.error(stats.toString());
+      }
+      console.log('Application built.');
 
-  await updateVersion();
-  console.log('Package.json file version updated.');
+      await updateVersion();
+      console.log('Package.json file version updated.');
+
+    }
+  );
+
 })();
