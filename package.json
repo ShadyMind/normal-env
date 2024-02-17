@@ -1,6 +1,6 @@
 {
   "name": "normal-env",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "",
   "main": "build/index.js",
   "browser": "build/normal-env.min.js",
@@ -43,6 +43,5 @@
     "webpack-cli": "^5.1.4",
     "semver": "^7.6.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
